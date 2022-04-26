@@ -19,6 +19,12 @@ import oogasalad.builder.view.property.PropertyEditor;
 
 import java.util.Collection;
 
+// Commits: f8b3c99b, ae68c513, 01758c04
+// This code represents a tab of the view that has a list of game elements and a panel to edit their properties
+// The main thing I want to show off here is how I'm actually making use of callbacks
+// Aside from that, this class is simply unifying the functionality of PropertyEditor and GameElementList
+// Those two classes exist on their own and can be used completely separately
+// The fact that they can also be used as a pair and work together without much effort provides evidence of good design
 /**
  * Generic Game element tab, containing common methods for creating/editing elements and displaying
  * them.
@@ -68,6 +74,8 @@ public class GameElementTab extends AbstractTab {
     rightBox.getStyleClass().add("rightPane");
     return rightBox;
   }
+
+  // Enables the save button, to be used once the "new" button is pressed
   private void activateSaveButton(){
     saveElementButton.setDisable(false);
   }
