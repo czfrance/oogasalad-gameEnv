@@ -4,7 +4,7 @@ import java.util.Set;
 import oogasalad.engine.model.board.exceptions.OutOfBoardException;
 import oogasalad.engine.model.board.Board;
 import oogasalad.engine.model.board.cells.Position;
-import oogasalad.engine.model.rule.SingleMove;
+import oogasalad.engine.model.rule.Move;
 import oogasalad.engine.model.utilities.Pair;
 
 /**
@@ -18,7 +18,7 @@ public class SaveGameEngine {
   public void onCellSelect(int x, int y) throws OutOfBoardException {
   }
 
-  public Pair<Position, Set<SingleMove>> getValidMoves(Board board, int i, int j) {
+  public Pair<Position, Set<Move>> getValidMoves(Board board, int i, int j) {
     return null;
   }
 

@@ -12,7 +12,7 @@ import oogasalad.engine.model.logicelement.winner.Draw;
 import oogasalad.engine.model.rule.Rule;
 import oogasalad.engine.model.rule.terminal_conditions.DrawRule;
 import oogasalad.engine.model.rule.terminal_conditions.EndRule;
-import oogasalad.engine.model.rule.SingleMove;
+import oogasalad.engine.model.rule.Move;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,9 +27,9 @@ public class Oracle implements StreamOracle {
 
   private static final EndRule DEFAULT_DRAW_RULE = new DrawRule("No winner", new Draw(new int[]{}));
 
-  private Collection<SingleMove> myMoves;
+  private Collection<Move> myMoves;
   private Collection<EndRule> myEndRules;
-  private Collection<SingleMove> myPersistentRules;
+  private Collection<Move> myPersistentRules;
   private EndRule myDrawRule;
 
   private int myNumPlayers;
@@ -39,7 +39,7 @@ public class Oracle implements StreamOracle {
     Collection<DrawRule> drawRules = filterByClass(rules, DrawRule.class);
     myDrawRule = getDrawRule(drawRules.stream().findFirst());
 
-    Collection<SingleMove> moves = filterByClass(rules, SingleMove.class);
+    Collection<Move> moves = filterByClass(rules, Move.class);
     Collection<EndRule> endRules = filterByClass(rules, EndRule.class);
     for (EndRule rule : endRules) {
       //System.out.println(rule.getName());
@@ -86,11 +86,11 @@ public class Oracle implements StreamOracle {
    * @param referencePoint
    * @return
    */
-  private Stream<SingleMove> getValidMovesForPosition(Board board, Position referencePoint) {
+  private Stream<Move> getValidMovesForPosition(Board board, Position referencePoint) {
     return myMoves.stream().filter((move) -> move.isValid(board, referencePoint));
   }
 
-  public Optional<SingleMove> getMoveByName(String name) {
+  public Optional<Move> getMoveByName(String name) {
     return myMoves.stream().filter(rule -> rule.getName().equals(name)).findFirst();
   }
 
@@ -116,7 +116,7 @@ public class Oracle implements StreamOracle {
    * @return
    */
   public Board applyPersistentRules(Board board) {
-    for (SingleMove rule: myPersistentRules) {
+    for (Move rule: myPersistentRules) {
       for (PositionState cell: board) {
         if (rule.isValid(board, cell.position())) {
           board = rule.doMove(board, cell.position());
@@ -150,8 +150,8 @@ public class Oracle implements StreamOracle {
    * @param p2 representative point
    * @return
    */
-  public Optional<SingleMove> getMoveSatisfying(Board board, Position p1, Position p2) {
-    Optional<SingleMove> choice = myMoves.stream().filter(move -> move.isValid(board, p1)).filter(move -> move.getRepresentativeCell(
+  public Optional<Move> getMoveSatisfying(Board board, Position p1, Position p2) {
+    Optional<Move> choice = myMoves.stream().filter(move -> move.isValid(board, p1)).filter(move -> move.getRepresentativeCell(
         p1).equals(p2)).findFirst();
     return choice;
   }

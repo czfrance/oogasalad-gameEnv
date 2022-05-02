@@ -11,7 +11,7 @@ import oogasalad.engine.model.board.Board;
 import oogasalad.engine.model.board.cells.Position;
 import oogasalad.engine.model.engine.Choice;
 import oogasalad.engine.model.engine.Oracle;
-import oogasalad.engine.model.rule.SingleMove;
+import oogasalad.engine.model.rule.Move;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +21,7 @@ public class HumanPlayer extends AbstractPlayer {
   private Position mySelectedCell = null;
   private Set<Position> myValidMoves = null;
 
-  private SingleMove mySelectedMove = null;
+  private Move mySelectedMove = null;
   private Choice myChoice;
 
   private Consumer<Set<Position>> mySetValidMarks;
@@ -46,7 +46,7 @@ public class HumanPlayer extends AbstractPlayer {
       } else {
         Oracle oracle = getOracle();
         Board board = getGameBoard();
-        Optional<SingleMove> move = oracle.getMoveSatisfying(board, mySelectedCell, cellClicked);
+        Optional<Move> move = oracle.getMoveSatisfying(board, mySelectedCell, cellClicked);
         if (move.isPresent()) {
           mySelectedMove = move.get();
           myChoice = new Choice(mySelectedCell, mySelectedMove, board);

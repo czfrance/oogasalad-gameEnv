@@ -12,7 +12,7 @@ import oogasalad.engine.model.board.Board;
 import oogasalad.engine.model.board.cells.Position;
 import oogasalad.engine.model.player.PlayerManager;
 import oogasalad.engine.model.driver.Game;
-import oogasalad.engine.model.rule.SingleMove;
+import oogasalad.engine.model.rule.Move;
 
 import oogasalad.engine.model.player.Player;
 import org.apache.logging.log4j.LogManager;
@@ -99,7 +99,7 @@ public class Engine implements PropertyChangeListener {
    */
   public void playTurn(Player player, Choice choice) {
     if (isActivePlayer(player) || choice.oldBoard() != getGameBoard()) {
-      SingleMove move = choice.move();
+      Move move = choice.move();
       Position referencePoint = choice.position();
       if (move.isValid(getGameBoard(), referencePoint)) {
         //Board board = move.doMove(getGameBoard(), referencePoint);

@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 public class MoveTest {
 
   Board myBoard;
-  SingleMove myMove;
+  Move myMove;
 
   @BeforeEach
   void setup() {
@@ -32,7 +32,7 @@ public class MoveTest {
     actions[1] = new Remove(new int[]{1,1,0});
     Position repPoint = new Position(2,2);
 
-    myMove = new SingleMove("Jump", conditions, actions, repPoint);
+    myMove = new Move("Jump", conditions, actions, repPoint);
   }
 
   void createJumpMove() {
@@ -45,7 +45,7 @@ public class MoveTest {
     actions[1] = new Remove(new int[]{1,1,0});
     Position repPoint = new Position(2,2);
 
-    myMove = new SingleMove("Jump", conditions, actions, repPoint);
+    myMove = new Move("Jump", conditions, actions, repPoint);
   }
 
   void createSingleMove() {
@@ -57,7 +57,7 @@ public class MoveTest {
     actions[0] = new Translate(new int[]{0,0,1,1,0});
     Position repPoint = new Position(1,1);
 
-    myMove = new SingleMove("Jump", conditions, actions, repPoint);
+    myMove = new Move("Jump", conditions, actions, repPoint);
 
   }
 

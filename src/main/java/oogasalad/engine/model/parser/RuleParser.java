@@ -7,7 +7,9 @@ import java.util.HashSet;
 import oogasalad.engine.model.logicelement.actions.Action;
 import oogasalad.engine.model.board.cells.Position;
 import oogasalad.engine.model.logicelement.conditions.Condition;
-import oogasalad.engine.model.rule.SingleMove;
+import oogasalad.engine.model.rule.AbstractMove;
+import oogasalad.engine.model.rule.PersistentMove;
+import oogasalad.engine.model.rule.Move;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -17,7 +19,7 @@ import org.json.JSONObject;
  *
  * @author Shaan Gondalia
  */
-public class RuleParser extends AbstractParser<Collection<SingleMove>> {
+public class RuleParser extends AbstractParser<Collection<Move>> {
 
   private static final String RULES = "rules";
   private static final String REPRESENTATIVE_POINT_X = "representativeX";
@@ -45,8 +47,8 @@ public class RuleParser extends AbstractParser<Collection<SingleMove>> {
    * @throws FileNotFoundException if the file is not found
    */
   @Override
-  public Collection<SingleMove> parse(File configFile) throws FileNotFoundException {
-    Collection<SingleMove> rules = new HashSet<>();
+  public Collection<Move> parse(File configFile) throws FileNotFoundException {
+    Collection<Move> rules = new HashSet<>();
     parseConditionsAndActions(configFile);
     JSONObject root = fileToJSON(configFile);
     JSONArray rulesJSON = root.getJSONArray(RULES);
@@ -58,9 +60,18 @@ public class RuleParser extends AbstractParser<Collection<SingleMove>> {
       Action[] actions = actionParser.resolveActions(rule);
       Condition[] conditions = conditionParser.resolveConditions(rule);
       boolean isPersistent = getIsPersistent(rule);
-      rules.add(new SingleMove(name, conditions, actions, repPoint, isPersistent));
+      rules.add(getMove(name, conditions, actions, repPoint, isPersistent));
     }
     return rules;
+  }
+
+  private Move getMove(String name, Condition[] conditions, Action[] actions, Position repPoint, boolean isPersistent) {
+    if (isPersistent) {
+      return new Move(name, conditions, actions, null);
+    }
+    else {
+      return new Move(name, conditions, actions, repPoint);
+    }
   }
 
   private boolean getIsPersistent(JSONObject rule) {
