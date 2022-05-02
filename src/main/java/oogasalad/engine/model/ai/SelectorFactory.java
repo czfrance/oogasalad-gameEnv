@@ -12,6 +12,7 @@ import oogasalad.engine.model.ai.evaluation.totals.TotalPieces;
 import oogasalad.engine.model.ai.moveSelection.CachingTreeSearcher;
 import oogasalad.engine.model.ai.moveSelection.Selects;
 import oogasalad.engine.model.board.cells.Piece;
+import oogasalad.engine.model.engine.StreamOracle;
 
 /**
  * @author Alex Bildner
@@ -28,7 +29,7 @@ public class SelectorFactory {
    * @param patterns     the patterns for pattern based win games
    * @return the selector
    */
-  public static Selects makeSelector(Difficulty difficulty, WinType winType, int playerNumber, AIOracle aiOracle, Collection<Pattern> patterns) {
+  public static Selects makeSelector(Difficulty difficulty, WinType winType, int playerNumber, StreamOracle aiOracle, Collection<Pattern> patterns) {
     StateEvaluator stateEvaluator = getStateEvaluator(winType, playerNumber, patterns, difficulty==Difficulty.ADAPTIVE);
     return new CachingTreeSearcher(difficulty, stateEvaluator, aiOracle, CaffeineMemoizer::new);
   }

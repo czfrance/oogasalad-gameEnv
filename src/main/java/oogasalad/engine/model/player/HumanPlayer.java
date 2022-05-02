@@ -11,7 +11,7 @@ import oogasalad.engine.model.board.Board;
 import oogasalad.engine.model.board.cells.Position;
 import oogasalad.engine.model.engine.Choice;
 import oogasalad.engine.model.engine.Oracle;
-import oogasalad.engine.model.rule.Move;
+import oogasalad.engine.model.rule.SingleMove;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +21,7 @@ public class HumanPlayer extends AbstractPlayer {
   private Position mySelectedCell = null;
   private Set<Position> myValidMoves = null;
 
-  private Move mySelectedMove = null;
+  private SingleMove mySelectedMove = null;
   private Choice myChoice;
 
   private Consumer<Set<Position>> mySetValidMarks;
@@ -46,7 +46,7 @@ public class HumanPlayer extends AbstractPlayer {
       } else {
         Oracle oracle = getOracle();
         Board board = getGameBoard();
-        Optional<Move> move = oracle.getMoveSatisfying(board, mySelectedCell, cellClicked);
+        Optional<SingleMove> move = oracle.getMoveSatisfying(board, mySelectedCell, cellClicked);
         if (move.isPresent()) {
           mySelectedMove = move.get();
           myChoice = new Choice(mySelectedCell, mySelectedMove, board);
@@ -62,7 +62,7 @@ public class HumanPlayer extends AbstractPlayer {
   private void makePieceSelected(int x, int y) {
     Board board = getGameBoard();
     mySelectedCell = new Position(x, y);
-    Stream<Position> validPositions = getOracle().getValidMovesForPosition(board, mySelectedCell).map(move -> move.getRepresentativeCell(mySelectedCell));
+    Stream<Position> validPositions = getOracle().getValidChoicesForPosition(board, mySelectedCell).map(choice -> choice.move().getRepresentativeCell(mySelectedCell));
     myValidMoves = validPositions.collect(Collectors.toSet());
     setMarkers(myValidMoves);
     LOG.info("{} valid moves for this piece\n", myValidMoves.size());
@@ -100,7 +100,7 @@ public class HumanPlayer extends AbstractPlayer {
    */
   protected Set<Choice> getMoves() {
     if (myOracle != null) {
-      return myOracle.getValidChoices(getGameBoard()).collect(Collectors.toSet());
+      return myOracle.getChoices(getGameBoard()).collect(Collectors.toSet());
     }
     else {
       return new HashSet<>();

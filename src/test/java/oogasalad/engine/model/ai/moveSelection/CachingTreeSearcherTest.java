@@ -3,11 +3,10 @@ package oogasalad.engine.model.ai.moveSelection;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.text.CollationElementIterator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import oogasalad.engine.model.ai.AIOracle;
+import oogasalad.engine.model.engine.StreamOracle;
 import oogasalad.engine.model.ai.enums.Difficulty;
 import oogasalad.engine.model.ai.evaluation.StateEvaluator;
 import oogasalad.engine.model.ai.evaluation.memoize.CaffeineMemoizer;
@@ -42,7 +41,7 @@ class CachingTreeSearcherTest {
         new PatternEvaluator(patterns),
     };
 
-    AIOracle aiOracle = null;
+    StreamOracle aiOracle = null;
 
     cachingTreeSearchers = new ArrayList<>();
     treeSearchers = new ArrayList<>();

@@ -5,11 +5,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import oogasalad.engine.model.board.Board;
-import oogasalad.engine.model.board.cells.Position;
 import oogasalad.engine.model.engine.Choice;
 import oogasalad.engine.model.engine.Oracle;
 import oogasalad.engine.model.player.AbstractPlayer;
@@ -34,7 +32,7 @@ public class RandomPlayer extends AbstractPlayer {
   @Override
   public void chooseMove(Board board) {
     setGameBoard(board);
-    Stream<Choice> choices = getOracle().getValidChoices(getGameBoard());
+    Stream<Choice> choices = getOracle().getChoices(getGameBoard());
     List<Choice> choicesList = choices.toList();
     Random rand = new Random();
     int index = rand.nextInt(choicesList.size());
@@ -62,7 +60,7 @@ public class RandomPlayer extends AbstractPlayer {
    */
   protected Set<Choice> getMoves() {
     if (myOracle != null) {
-      return myOracle.getValidChoices(getGameBoard()).collect(Collectors.toSet());
+      return myOracle.getChoices(getGameBoard()).collect(Collectors.toSet());
     }
     else {
       return new HashSet<>();

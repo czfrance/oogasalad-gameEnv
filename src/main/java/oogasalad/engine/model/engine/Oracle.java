@@ -3,11 +3,8 @@ import static org.jooq.lambda.Seq.seq;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
-import oogasalad.engine.model.ai.AIOracle;
 import oogasalad.engine.model.board.Board;
 import oogasalad.engine.model.board.cells.Position;
 import oogasalad.engine.model.board.cells.PositionState;
@@ -15,25 +12,24 @@ import oogasalad.engine.model.logicelement.winner.Draw;
 import oogasalad.engine.model.rule.Rule;
 import oogasalad.engine.model.rule.terminal_conditions.DrawRule;
 import oogasalad.engine.model.rule.terminal_conditions.EndRule;
-import oogasalad.engine.model.rule.Move;
+import oogasalad.engine.model.rule.SingleMove;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jooq.lambda.Seq;
 
 /**
  * This class controls game logic, such as generation of available moves, checking rules, etc
  *
  * @author Jake Heller
  */
-public class Oracle implements AIOracle {
+public class Oracle implements StreamOracle {
 
   private static final Logger LOG = LogManager.getLogger(Oracle.class);
 
   private static final EndRule DEFAULT_DRAW_RULE = new DrawRule("No winner", new Draw(new int[]{}));
 
-  private Collection<Move> myMoves;
+  private Collection<SingleMove> myMoves;
   private Collection<EndRule> myEndRules;
-  private Collection<Move> myPersistentRules;
+  private Collection<SingleMove> myPersistentRules;
   private EndRule myDrawRule;
 
   private int myNumPlayers;
@@ -43,7 +39,7 @@ public class Oracle implements AIOracle {
     Collection<DrawRule> drawRules = filterByClass(rules, DrawRule.class);
     myDrawRule = getDrawRule(drawRules.stream().findFirst());
 
-    Collection<Move> moves = filterByClass(rules, Move.class);
+    Collection<SingleMove> moves = filterByClass(rules, SingleMove.class);
     Collection<EndRule> endRules = filterByClass(rules, EndRule.class);
     for (EndRule rule : endRules) {
       //System.out.println(rule.getName());
@@ -90,15 +86,15 @@ public class Oracle implements AIOracle {
    * @param referencePoint
    * @return
    */
-  public Stream<Move> getValidMovesForPosition(Board board, Position referencePoint) {
+  private Stream<SingleMove> getValidMovesForPosition(Board board, Position referencePoint) {
     return myMoves.stream().filter((move) -> move.isValid(board, referencePoint));
   }
 
-  public Optional<Move> getMoveByName(String name) {
+  public Optional<SingleMove> getMoveByName(String name) {
     return myMoves.stream().filter(rule -> rule.getName().equals(name)).findFirst();
   }
 
-  private Stream<Choice> getValidChoicesForPosition(Board board, Position referencePoint) {
+  public Stream<Choice> getValidChoicesForPosition(Board board, Position referencePoint) {
     return getValidMovesForPosition(board, referencePoint).map(move -> new Choice(referencePoint, move, board));
   }
 
@@ -107,7 +103,7 @@ public class Oracle implements AIOracle {
    * @param board
    * @return
    */
-  public Stream<Choice> getValidChoices(Board board) {
+  public Stream<Choice> getChoices(Board board) {
     return board.getPositionStatesStream().flatMap(positionState -> getValidChoicesForPosition(board, positionState.position()));
   }
 
@@ -120,7 +116,7 @@ public class Oracle implements AIOracle {
    * @return
    */
   public Board applyPersistentRules(Board board) {
-    for (Move rule: myPersistentRules) {
+    for (SingleMove rule: myPersistentRules) {
       for (PositionState cell: board) {
         if (rule.isValid(board, cell.position())) {
           board = rule.doMove(board, cell.position());
@@ -154,8 +150,8 @@ public class Oracle implements AIOracle {
    * @param p2 representative point
    * @return
    */
-  public Optional<Move> getMoveSatisfying(Board board, Position p1, Position p2) {
-    Optional<Move> choice = myMoves.stream().filter(move -> move.isValid(board, p1)).filter(move -> move.getRepresentativeCell(
+  public Optional<SingleMove> getMoveSatisfying(Board board, Position p1, Position p2) {
+    Optional<SingleMove> choice = myMoves.stream().filter(move -> move.isValid(board, p1)).filter(move -> move.getRepresentativeCell(
         p1).equals(p2)).findFirst();
     return choice;
   }
@@ -186,11 +182,11 @@ public class Oracle implements AIOracle {
   @Override
   public Stream<Choice> getChoices(Board board, int player) {
     board = board.setPlayer(player);
-    return getValidChoices(board);
+    return getChoices(board);
   }
 
   @Override
-  public boolean isWinningState(Board board) {
+  public boolean isTerminalState(Board board) {
     Optional<EndRule> satisfyingEndRule = getValidEndRules(board).findFirst();
     return satisfyingEndRule.isPresent();
   }

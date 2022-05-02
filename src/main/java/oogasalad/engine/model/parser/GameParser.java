@@ -8,7 +8,7 @@ import java.util.Map;
 import oogasalad.engine.model.board.Board;
 import oogasalad.engine.model.rule.Rule;
 import oogasalad.engine.model.rule.terminal_conditions.EndRule;
-import oogasalad.engine.model.rule.Move;
+import oogasalad.engine.model.rule.SingleMove;
 
 /**
  * Parser that reads an existing game configuration from a directory. Responsible for creating a
@@ -58,7 +58,7 @@ public class GameParser {
    *
    * @return an array of rules
    */
-  public Collection<Move> readMoves() throws FileNotFoundException {
+  public Collection<SingleMove> readMoves() throws FileNotFoundException {
     return moveParser.parse(configFile);
   }
 

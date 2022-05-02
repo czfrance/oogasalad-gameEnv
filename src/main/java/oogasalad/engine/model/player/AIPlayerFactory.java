@@ -2,7 +2,7 @@ package oogasalad.engine.model.player;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import oogasalad.engine.model.ai.AIOracle;
+import oogasalad.engine.model.engine.StreamOracle;
 import oogasalad.engine.model.ai.AIPlayer;
 import oogasalad.engine.model.ai.SelectorFactory;
 import oogasalad.engine.model.ai.enums.Difficulty;
@@ -28,7 +28,7 @@ public class AIPlayerFactory {
    * @param patterns     the patterns which can win a game for games with pattern based winning
    * @return the AI Player
    */
-  public AbstractPlayer makeAIPlayer(Difficulty difficulty, WinType winType, int playerNumber, AIOracle aiOracle, Collection<Pattern> patterns) {
+  public AbstractPlayer makeAIPlayer(Difficulty difficulty, WinType winType, int playerNumber, StreamOracle aiOracle, Collection<Pattern> patterns) {
     Selects selects = SelectorFactory.makeSelector(difficulty, winType, playerNumber, aiOracle, patterns);
     return new AIPlayer(playerNumber, selects);
   }

@@ -62,7 +62,7 @@ public class PlayerTurnTest {
 
   void playRandomMove() {
     Board board = myGame.getBoard();
-    Stream<Choice> choices = myOracle.getValidChoices(board);
+    Stream<Choice> choices = myOracle.getChoices(board);
     Choice choice = choices.findAny().get();
 
     myEngine.playTurn(myPlayerManager.getPlayer(board.getPlayer()), choice);

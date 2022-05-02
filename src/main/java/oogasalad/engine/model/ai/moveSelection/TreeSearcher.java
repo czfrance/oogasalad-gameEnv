@@ -6,7 +6,7 @@ import static org.jooq.lambda.Seq.seq;
 
 import java.util.Optional;
 import oogasalad.engine.model.ai.AIChoice;
-import oogasalad.engine.model.ai.AIOracle;
+import oogasalad.engine.model.engine.StreamOracle;
 import oogasalad.engine.model.ai.enums.Difficulty;
 import oogasalad.engine.model.ai.evaluation.Evaluation;
 import oogasalad.engine.model.ai.evaluation.StateEvaluator;
@@ -20,11 +20,11 @@ import org.jooq.lambda.Seq;
 public class TreeSearcher implements Selects {
   private final int maxDepth;
   private final StateEvaluator stateEvaluator;
-  private final AIOracle aiOracle;
+  private final StreamOracle aiOracle;
   private final TimeLimit timeLimit;
 
 
-  public TreeSearcher(Difficulty difficulty, StateEvaluator stateEvaluator, AIOracle aiOracle) {
+  public TreeSearcher(Difficulty difficulty, StateEvaluator stateEvaluator, StreamOracle aiOracle) {
     this.maxDepth = difficulty.depth();
     this.timeLimit = difficulty.timeLimit();
     this.stateEvaluator = stateEvaluator;
@@ -71,7 +71,7 @@ public class TreeSearcher implements Selects {
   }
 
   protected boolean limitReached(Board board, int depth) {
-    return (depth == 0 || timeLimit.isTimeUp()) || aiOracle.isWinningState(board);
+    return (depth == 0 || timeLimit.isTimeUp()) || aiOracle.isTerminalState(board);
   }
 
   public int getDepthLimit() {

@@ -31,7 +31,7 @@ public class EndRuleTest {
   @Test
   void testTrue() {
     Board board = new Board(3,3);
-    assertTrue(myOracle.isWinningState(board));
+    assertTrue(myOracle.isTerminalState(board));
     assertEquals(1, myOracle.getWinner(board));
   }
 

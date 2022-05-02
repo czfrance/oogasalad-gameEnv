@@ -7,7 +7,7 @@ import java.util.HashSet;
 import oogasalad.engine.model.logicelement.actions.Action;
 import oogasalad.engine.model.board.cells.Position;
 import oogasalad.engine.model.logicelement.conditions.Condition;
-import oogasalad.engine.model.rule.Move;
+import oogasalad.engine.model.rule.SingleMove;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -17,7 +17,7 @@ import org.json.JSONObject;
  *
  * @author Shaan Gondalia
  */
-public class RuleParser extends AbstractParser<Collection<Move>> {
+public class RuleParser extends AbstractParser<Collection<SingleMove>> {
 
   private static final String RULES = "rules";
   private static final String REPRESENTATIVE_POINT_X = "representativeX";
@@ -45,8 +45,8 @@ public class RuleParser extends AbstractParser<Collection<Move>> {
    * @throws FileNotFoundException if the file is not found
    */
   @Override
-  public Collection<Move> parse(File configFile) throws FileNotFoundException {
-    Collection<Move> rules = new HashSet<>();
+  public Collection<SingleMove> parse(File configFile) throws FileNotFoundException {
+    Collection<SingleMove> rules = new HashSet<>();
     parseConditionsAndActions(configFile);
     JSONObject root = fileToJSON(configFile);
     JSONArray rulesJSON = root.getJSONArray(RULES);
@@ -58,7 +58,7 @@ public class RuleParser extends AbstractParser<Collection<Move>> {
       Action[] actions = actionParser.resolveActions(rule);
       Condition[] conditions = conditionParser.resolveConditions(rule);
       boolean isPersistent = getIsPersistent(rule);
-      rules.add(new Move(name, conditions, actions, repPoint, isPersistent));
+      rules.add(new SingleMove(name, conditions, actions, repPoint, isPersistent));
     }
     return rules;
   }

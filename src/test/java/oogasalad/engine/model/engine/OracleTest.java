@@ -33,7 +33,7 @@ public class OracleTest {
 
   @Test
   void testGetChoice() {
-    Stream<Choice> choices = myOracle.getValidChoices(myBoard);
+    Stream<Choice> choices = myOracle.getChoices(myBoard);
     assertEquals(choices.count(), 7);
   }
 
