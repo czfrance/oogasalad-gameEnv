@@ -62,7 +62,7 @@ public class HumanPlayer extends AbstractPlayer {
   private void makePieceSelected(int x, int y) {
     Board board = getGameBoard();
     mySelectedCell = new Position(x, y);
-    Stream<Position> validPositions = getOracle().getValidChoicesForPosition(board, mySelectedCell).map(choice -> choice.move().getRepresentativeCell(mySelectedCell));
+    Stream<Position> validPositions = getOracle().getChoicesForPosition(board, mySelectedCell).map(choice -> choice.move().getRepresentativeCell(mySelectedCell));
     myValidMoves = validPositions.collect(Collectors.toSet());
     setMarkers(myValidMoves);
     LOG.info("{} valid moves for this piece\n", myValidMoves.size());

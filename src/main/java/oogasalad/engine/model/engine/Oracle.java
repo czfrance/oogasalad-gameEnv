@@ -41,9 +41,6 @@ public class Oracle implements StreamOracle {
 
     Collection<Move> moves = filterByClass(rules, Move.class);
     Collection<EndRule> endRules = filterByClass(rules, EndRule.class);
-    for (EndRule rule : endRules) {
-      //System.out.println(rule.getName());
-    }
 
     myMoves = moves.stream().filter(move -> !move.isPersistent()).toList();
     myPersistentRules = moves.stream().filter(move -> move.isPersistent()).toList();
@@ -90,11 +87,16 @@ public class Oracle implements StreamOracle {
     return myMoves.stream().filter((move) -> move.isValid(board, referencePoint));
   }
 
+  /**
+   * Returns name given to rule
+   * @param name
+   * @return
+   */
   public Optional<Move> getMoveByName(String name) {
     return myMoves.stream().filter(rule -> rule.getName().equals(name)).findFirst();
   }
 
-  public Stream<Choice> getValidChoicesForPosition(Board board, Position referencePoint) {
+  public Stream<Choice> getChoicesForPosition(Board board, Position referencePoint) {
     return getValidMovesForPosition(board, referencePoint).map(move -> new Choice(referencePoint, move, board));
   }
 
@@ -104,7 +106,7 @@ public class Oracle implements StreamOracle {
    * @return
    */
   public Stream<Choice> getChoices(Board board) {
-    return board.getPositionStatesStream().flatMap(positionState -> getValidChoicesForPosition(board, positionState.position()));
+    return board.getPositionStatesStream().flatMap(positionState -> getChoicesForPosition(board, positionState.position()));
   }
 
   /**
@@ -115,7 +117,7 @@ public class Oracle implements StreamOracle {
    * @param board
    * @return
    */
-  public Board applyPersistentRules(Board board) {
+  private Board applyPersistentRules(Board board) {
     for (Move rule: myPersistentRules) {
       for (PositionState cell: board) {
         if (rule.isValid(board, cell.position())) {
@@ -132,6 +134,7 @@ public class Oracle implements StreamOracle {
    * @param choice
    * @return
    */
+  @Override
   public Board getNextState(Board board, Choice choice) {
     if (!choice.isValidChoice(board)) {
       throw new RuntimeException("Invalid Choice");
@@ -211,6 +214,7 @@ public class Oracle implements StreamOracle {
    * @param board
    * @return
    */
+  @Override
   public int getWinner(Board board) {
     Optional<EndRule> validEndRule = getValidEndRules(board).findFirst();
     return validEndRule.get().getWinner(board);
